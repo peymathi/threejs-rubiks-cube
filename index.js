@@ -1,9 +1,9 @@
 // Globals defined. Initialized in init function
-let camera, cube, renderer, scene, timer;
+let camera, cube, renderer, scene, tester_cube, timer;
 let frameCounter = 0;
 
 let loader = new THREE.TextureLoader();
-loader.setPath("textures/cube_faces");
+loader.setPath("textures/cube_faces/");
 
 // Array of materials be used for each cube. Indexable by constants
 let materials = [
@@ -54,6 +54,20 @@ function init() {
     // Moves the camera back from the origin so that the objects can be seen
     camera.position.z = 6;
 
+    // Basic multicolor cube for testing lights, cameras, scene, etc.
+    let tester_cube_materials = [
+        new THREE.MeshBasicMaterial({ map: loader.load('red.png') }), // pos-x
+        new THREE.MeshBasicMaterial({ map: loader.load('blue.png') }), // neg-x
+        new THREE.MeshBasicMaterial({ map: loader.load('green.png') }), // pos-y
+        new THREE.MeshBasicMaterial({ map: loader.load('yellow.png') }), // neg-y
+        new THREE.MeshBasicMaterial({ map: loader.load('orange.png') }), // pos-z
+        new THREE.MeshBasicMaterial({ map: loader.load('white.png') }), // neg-z
+    ];
+
+    let tester_cube_geom = new THREE.BoxGeometry(1, 1, 1);
+    tester_cube = new THREE.Mesh(tester_cube_geom, tester_cube_materials);
+    scene.add(tester_cube);
+
 }
 
 // Function that is meant to be called once per frame
@@ -76,10 +90,27 @@ function update() {
         Make changes to all objects in the scene
     */
 
+    tester_cube.rotation.x += 0.01;
+    tester_cube.rotation.y += 0.04;
 
     // Rerender the scene and camera
     renderer.render(scene, camera);
 }
 
+// Sets up all of the vanilla JS stuff
+function main() {
+
+    window.onresize = resize;
+}
+
+// Function handler that resizes the renderer and camera on window resize
+function resize() {
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 6;
+}
+
+main();
 init();
 update();
