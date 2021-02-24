@@ -3,7 +3,7 @@ function update() {
 
     // This line sends this function callback to a THREE.js function which will automatically handle the framerate
     requestAnimationFrame(update);
-
+    
     // Compute the delta time and count total frames since start. Delta is in ms
     frameCounter += 1;
     let delta = 0;
@@ -19,8 +19,12 @@ function update() {
     */
 
     // Visual testing rotations. Allows vision on each side of the main cube
-    main_cube.rotation.x += 0.01;
-    main_cube.rotation.y += 0.04;
+    if (frameCounter === 100) {
+        console.log("yo");
+        main_cube.group.rotation.x += Math.PI;
+    }
+    // main_cube.group.rotation.x += 0.01;
+    // main_cube.group.rotation.y += 0.04;
 
     // Rerender the scene and camera
     renderer.render(scene, camera);

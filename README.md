@@ -12,10 +12,22 @@ There 36 are objects in the scene:
 - 8 corner piece cubes: each corner piece is a part of 3 face groups
 - 12 middle piece cubes: each middle piece is a part of 2 face groups
 
+### MainCube
+
+MainCube is a class to represent the entire cube. It contains the Group which has all of the Face groups. It has a method to build each of the faces.
+
+### Face
+
+Face is a class to represent a face of the cube. It contains a position (posx, negx, posy, etx.), a Group, and an array of the current cubes in the group.
+
+### Cube
+
+Cube is a class to represent a single piece. Because an Object3D can only be a part of one group at a time in THREE.js, the cube class has a reference to the current group (default is the MainCube) and an array of all the faces that the cube is a currently a part of. 
+
 ## Cubes
 
-Each cube is a Mesh made from a BoxGeometry and array of basic and phong materials. Basic materials load a PNG texture to represent a color of the Rubik's cube whereas Phong materials are just the color black. Every cube is a part of 1 or more groups. The cubes themselves do not move or rotate,
-but the groups do move. Corner and middle piece cubes will have to leave and join groups from rotating different faces of the cube. 
+Each cube is a Mesh made from a BoxGeometry and array of basic and phong materials. Basic materials load a PNG texture to represent a color of the Rubik's cube whereas Phong materials are just the color black. Every cube is a part of 1 or more faces. The cubes themselves do not move or rotate,
+but the groups move which moves the cubes in each group. Corner and middle piece cubes will have to leave and join groups from rotating to different faces of the cube. 
 
 ## User Input
 
