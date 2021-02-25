@@ -45,7 +45,7 @@ class MainCube {
 // Class representing a face of the rubik's cube
 class Face {
     constructor(position) {
-        this.postiion = position;
+        this.position = position;
         this.group = new THREE.Group();
         this.cubes = new Array(9);
     }
@@ -60,6 +60,15 @@ class Face {
         for (let i = 0; i < 9; i++)
         {
             this.cubes[i].reset();
+        }
+    }
+
+    // TESTING REMOVE LATER
+    check() {
+        console.log(this.position)
+        for (let i = 0; i < 9; i++)
+        {
+            console.log(this.position + ":" + this.cubes[i] + ":" + i);
         }
     }
 }
@@ -289,7 +298,6 @@ function init() {
         }
     }
 
-    console.log(main_cube.faces[POS_Y].cubes)
     // Orange Face
     for (let loc = 0; loc < 9; loc++)
     {
@@ -300,22 +308,22 @@ function init() {
             new_mats[NEG_Z] = materials[ORANGE_MAT];
 
             // Blue
-            if (loc === UPPER_RIGHT || loc === MIDDLE_RIGHT || loc === BOTTOM_RIGHT) {
+            if (loc === UPPER_LEFT || loc === MIDDLE_LEFT || loc === BOTTOM_LEFT) {
                 new_mats[NEG_X] = materials[BLUE_MAT];
             }
 
             // Red
-            if (loc === UPPER_LEFT || loc === MIDDLE_LEFT || loc === BOTTOM_LEFT) {
+            if (loc === UPPER_RIGHT || loc === MIDDLE_RIGHT || loc === BOTTOM_RIGHT) {
                 new_mats[POS_X] = materials[RED_MAT];
             }
 
             // White
-            if (loc === UPPER_LEFT || loc === UPPER_MIDDLE || loc === UPPER_RIGHT) {
+            if (loc === BOTTOM_LEFT || loc === BOTTOM_MIDDLE || loc === BOTTOM_RIGHT) {
                 new_mats[POS_Y] = materials[WHITE_MAT];
             }
 
             // Yellow
-            if (loc === BOTTOM_LEFT || loc === BOTTOM_MIDDLE || loc === BOTTOM_RIGHT) {
+            if (loc === UPPER_LEFT || loc === UPPER_MIDDLE || loc === UPPER_RIGHT) {
                 new_mats[NEG_Y] = materials[YELLOW_MAT];
             }
 
@@ -328,44 +336,44 @@ function init() {
             // Add the cube to the appropriate other faces and change the position accordingly
             switch (loc) {
                 case UPPER_LEFT:
-                    main_cube.faces[POS_X].cubes[UPPER_RIGHT] = new_cube_obj;
-                    main_cube.faces[POS_Y].cubes[UPPER_RIGHT] = new_cube_obj;
-                    new_cube.position.x += CUBE_SIZE;
-                    new_cube.position.y += CUBE_SIZE;
+                    main_cube.faces[NEG_X].cubes[BOTTOM_LEFT] = new_cube_obj;
+                    main_cube.faces[NEG_Y].cubes[BOTTOM_LEFT] = new_cube_obj;
+                    new_cube.position.x -= CUBE_SIZE;
+                    new_cube.position.y -= CUBE_SIZE;
                     break;
                 case UPPER_MIDDLE:
-                    main_cube.faces[POS_Y].cubes[UPPER_MIDDLE] = new_cube_obj;
-                    new_cube.position.y += CUBE_SIZE;
+                    main_cube.faces[NEG_Y].cubes[BOTTOM_MIDDLE] = new_cube_obj;
+                    new_cube.position.y -= CUBE_SIZE;
                     break;
                 case UPPER_RIGHT:
-                    main_cube.faces[NEG_X].cubes[UPPER_LEFT] = new_cube_obj;
-                    main_cube.faces[POS_Y].cubes[UPPER_LEFT] = new_cube_obj;
-                    new_cube.position.x -= CUBE_SIZE;
-                    new_cube.position.y += CUBE_SIZE;
-                    break;
-                case MIDDLE_LEFT:
-                    main_cube.faces[POS_X].cubes[MIDDLE_LEFT] = new_cube_obj;
-                    new_cube.position.x += CUBE_SIZE;
-                    break;
-                case MIDDLE_RIGHT:
-                    main_cube.faces[NEG_X].cubes[MIDDLE_RIGHT] = new_cube_obj;
-                    new_cube.position.x -= CUBE_SIZE;
-                    break;
-                case BOTTOM_LEFT:
                     main_cube.faces[POS_X].cubes[BOTTOM_RIGHT] = new_cube_obj;
                     main_cube.faces[NEG_Y].cubes[BOTTOM_RIGHT] = new_cube_obj;
                     new_cube.position.x += CUBE_SIZE;
                     new_cube.position.y -= CUBE_SIZE;
                     break;
+                case MIDDLE_LEFT:
+                    main_cube.faces[NEG_X].cubes[MIDDLE_LEFT] = new_cube_obj;
+                    new_cube.position.x -= CUBE_SIZE;
+                    break;
+                case MIDDLE_RIGHT:
+                    main_cube.faces[POS_X].cubes[MIDDLE_RIGHT] = new_cube_obj;
+                    new_cube.position.x += CUBE_SIZE;
+                    break;
+                case BOTTOM_LEFT:
+                    main_cube.faces[NEG_X].cubes[UPPER_LEFT] = new_cube_obj;
+                    main_cube.faces[POS_Y].cubes[UPPER_LEFT] = new_cube_obj;
+                    new_cube.position.x -= CUBE_SIZE;
+                    new_cube.position.y += CUBE_SIZE;
+                    break;
                 case BOTTOM_MIDDLE:
-                    main_cube.faces[NEG_Y].cubes[BOTTOM_MIDDLE] = new_cube_obj;
-                    new_cube.position.y -= CUBE_SIZE;
+                    main_cube.faces[POS_Y].cubes[UPPER_MIDDLE] = new_cube_obj;
+                    new_cube.position.y += CUBE_SIZE;
                     break;
                 case BOTTOM_RIGHT:
-                    main_cube.faces[NEG_X].cubes[BOTTOM_LEFT] = new_cube_obj;
-                    main_cube.faces[NEG_Y].cubes[BOTTOM_RIGHT] = new_cube_obj;
-                    new_cube.position.x -= CUBE_SIZE;
-                    new_cube.position.y -= CUBE_SIZE;
+                    main_cube.faces[POS_X].cubes[UPPER_RIGHT] = new_cube_obj;
+                    main_cube.faces[POS_Y].cubes[UPPER_RIGHT] = new_cube_obj;
+                    new_cube.position.x += CUBE_SIZE;
+                    new_cube.position.y += CUBE_SIZE;
             }
         }
     }
@@ -377,6 +385,7 @@ function init() {
     new_cube = new THREE.Mesh(cube_geom, new_mats);
     new_cube_obj = new Cube(new_cube, main_cube);
     main_cube.faces[POS_Y].cubes[MIDDLE_LEFT] = new_cube_obj;
+    main_cube.faces[NEG_X].cubes[UPPER_MIDDLE] = new_cube_obj;
     new_cube.position.x -= CUBE_SIZE;
     new_cube.position.y += CUBE_SIZE;
 
@@ -385,6 +394,7 @@ function init() {
     new_mats[NEG_Y] = materials[YELLOW_MAT];
     new_cube = new THREE.Mesh(cube_geom, new_mats);
     new_cube_obj = new Cube(new_cube, main_cube);
+    main_cube.faces[NEG_X].cubes[BOTTOM_MIDDLE] = new_cube_obj;
     main_cube.faces[NEG_Y].cubes[MIDDLE_LEFT] = new_cube_obj;
     new_cube.position.x -= CUBE_SIZE;
     new_cube.position.y -= CUBE_SIZE;
@@ -395,6 +405,7 @@ function init() {
     new_mats[POS_Y] = materials[WHITE_MAT];
     new_cube = new THREE.Mesh(cube_geom, new_mats);
     new_cube_obj = new Cube(new_cube, main_cube);
+    main_cube.faces[POS_X].cubes[UPPER_MIDDLE] = new_cube_obj;
     main_cube.faces[POS_Y].cubes[MIDDLE_RIGHT] = new_cube_obj;
     new_cube.position.x += CUBE_SIZE;
     new_cube.position.y += CUBE_SIZE;
@@ -405,10 +416,14 @@ function init() {
     new_cube = new THREE.Mesh(cube_geom, new_mats);
     new_cube_obj = new Cube(new_cube, main_cube);
     main_cube.faces[NEG_Y].cubes[MIDDLE_RIGHT] = new_cube_obj;
+    main_cube.faces[POS_X].cubes[BOTTOM_MIDDLE] = new_cube_obj;
     new_cube.position.x += CUBE_SIZE;
     new_cube.position.y -= CUBE_SIZE;
 
-    // White
+    // TEST
+    for (let i = 0; i < 6; i++)
+    {
+        main_cube.faces[i].check();
+    }
 
-    // Yellow
 }
