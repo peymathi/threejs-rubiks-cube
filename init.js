@@ -49,6 +49,19 @@ class Face {
         this.group = new THREE.Group();
         this.cubes = new Array(9);
     }
+
+    rotate() {
+        for (let i = 0; i < 9; i++) {
+            this.group.add(this.cubes[i].cube);
+        }
+    }
+
+    finishRotation() {
+        for (let i = 0; i < 9; i++)
+        {
+            this.cubes[i].reset();
+        }
+    }
 }
 
 // Class representing a single piece of the rubik's cube
@@ -57,7 +70,12 @@ class Cube {
         this.cube = cube;
         this.cur_parents = [];
         this.cur_parent = main_cube;
+        this.main_cube = main_cube;
         main_cube.group.add(this.cube);
+    }
+
+    reset() {
+        this.main_cube.group.add(this.cube);
     }
 }
 
@@ -137,7 +155,6 @@ function init() {
     let new_cube_obj;
     let new_mats;
 
-
     // Centers
     // pos-x red center
     // Colors the cube accordingly
@@ -195,106 +212,203 @@ function init() {
     // Green Face
     for (let loc = 0; loc < 9; loc++)
     {
-        // Determine the color of the materials for the new cube
-        new_mats = black_mats.slice();
-        new_mats[POS_Z] = materials[GREEN_MAT];
-        switch(loc) {
-            case UPPER_LEFT:
-                new_mats[NEG_X] = materials[BLUE_MAT];
-                new_mats[POS_Y] = materials[WHITE_MAT];
-                break;
-            case UPPER_MIDDLE:
-                new_mats[POS_Y] = materials[WHITE_MAT];
-                break;
-            case UPPER_RIGHT:
-                new_mats[POS_Y] = materials[WHITE_MAT];
+        if (loc !== CENTER)
+        {
+            // Determine the color of the materials for the new cube
+            new_mats = black_mats.slice();
+            new_mats[POS_Z] = materials[GREEN_MAT];
+            
+            // Red
+            if (loc === UPPER_RIGHT || loc === MIDDLE_RIGHT || loc === BOTTOM_RIGHT) {
                 new_mats[POS_X] = materials[RED_MAT];
-                break;
-            case MIDDLE_LEFT:
-                new_mats[NEG_X] = materials[BLUE_MAT];
-                break;
-            case MIDDLE_RIGHT:
-                new_mats[POS_X] = materials[RED_MAT];
-                break;
-            case BOTTOM_LEFT:
-                new_mats[NEG_X] = materials[BLUE_MAT];
-                new_mats[NEG_Y] = materials[YELLOW_MAT];
-                break;
-            case BOTTOM_MIDDLE:
-                new_mats[NEG_Y] = materials[YELLOW_MAT];
-                break;
-            case BOTTOM_RIGHT:
-                new_mats[NEG_Y] = materials[YELLOW_MAT];
-                new_mats[POS_X] = materials[RED_MAT];
-        }
+            }
 
-        // Create the cube and add it to the green face
-        new_cube = new THREE.Mesh(cube_geom, new_mats);
-        new_cube_obj = new Cube(new_cube, main_cube);
-        main_cube.faces[POS_Z].cubes[loc] = new_cube_obj;
-        new_cube.position.z += CUBE_SIZE;
+            // Blue
+            if (loc === UPPER_LEFT || loc === MIDDLE_LEFT || loc === BOTTOM_LEFT) {
+                new_mats[NEG_X] = materials[BLUE_MAT];
+            }
 
-        // Add the cube to the appropriate other faces and change the position accordingly
-        switch (loc) {
-            case UPPER_LEFT:
-                main_cube.faces[NEG_X].cubes[loc] = new_cube_obj;
-                main_cube.faces[POS_Y].cubes[loc] = new_cube_obj;
-                new_cube.position.x -= CUBE_SIZE;
-                new_cube.position.y += CUBE_SIZE;
-                break;
-            case UPPER_MIDDLE:
-                main_cube.faces[POS_Y].cubes[loc] = new_cube_obj;
-                new_cube.position.y += CUBE_SIZE;
-                break;
-            case UPPER_RIGHT:
-                main_cube.faces[POS_Y].cubes[loc] = new_cube_obj;
-                main_cube.faces[POS_X].cubes[loc] = new_cube_obj;
-                new_cube.position.y += CUBE_SIZE;
-                new_cube.position.x += CUBE_SIZE;
-                break;
-            case MIDDLE_LEFT:
-                main_cube.faces[NEG_X].cubes[loc] = new_cube_obj;
-                new_cube.position.x -= CUBE_SIZE;
-                break;
-            case MIDDLE_RIGHT:
-                main_cube.faces[POS_X].cubes[loc] = new_cube_obj;
-                new_cube.position.x += CUBE_SIZE;
-                break;
-            case BOTTOM_LEFT:
-                main_cube.faces[NEG_X].cubes[loc] = new_cube_obj;
-                main_cube.faces[NEG_Y].cubes[loc] = new_cube_obj;
-                new_cube.position.x -= CUBE_SIZE;
-                new_cube.position.y -= CUBE_SIZE;
-                break;
-            case BOTTOM_MIDDLE:
-                main_cube.faces[NEG_Y].cubes[loc] = new_cube_obj;
-                new_cube.position.y -= CUBE_SIZE;
-                break;
-            case BOTTOM_RIGHT:
-                main_cube.faces[POS_X].cubes[loc] = new_cube_obj;
-                main_cube.faces[NEG_Y].cubes[loc] = new_cube_obj;
-                new_cube.position.x += CUBE_SIZE;
-                new_cube.position.y -= CUBE_SIZE;
+            // White
+            if (loc === UPPER_LEFT || loc === UPPER_MIDDLE || loc === UPPER_RIGHT) {
+                new_mats[POS_Y] = materials[WHITE_MAT];
+            }
+
+            // Yellow
+            if (loc === BOTTOM_LEFT || loc === BOTTOM_MIDDLE || loc === BOTTOM_RIGHT) {
+                new_mats[NEG_Y] = materials[YELLOW_MAT];
+            }
+
+            // Create the cube and add it to the green face
+            new_cube = new THREE.Mesh(cube_geom, new_mats);
+            new_cube_obj = new Cube(new_cube, main_cube);
+            main_cube.faces[POS_Z].cubes[loc] = new_cube_obj;
+            new_cube.position.z += CUBE_SIZE;
+
+            // Add the cube to the appropriate other faces and change the position accordingly
+            switch (loc) {
+                case UPPER_LEFT:
+                    main_cube.faces[NEG_X].cubes[UPPER_RIGHT] = new_cube_obj;
+                    main_cube.faces[POS_Y].cubes[BOTTOM_LEFT] = new_cube_obj;
+                    new_cube.position.x -= CUBE_SIZE;
+                    new_cube.position.y += CUBE_SIZE;
+                    break;
+                case UPPER_MIDDLE:
+                    main_cube.faces[POS_Y].cubes[BOTTOM_MIDDLE] = new_cube_obj;
+                    new_cube.position.y += CUBE_SIZE;
+                    break;
+                case UPPER_RIGHT:
+                    main_cube.faces[POS_Y].cubes[BOTTOM_RIGHT] = new_cube_obj;
+                    main_cube.faces[POS_X].cubes[UPPER_LEFT] = new_cube_obj;
+                    new_cube.position.y += CUBE_SIZE;
+                    new_cube.position.x += CUBE_SIZE;
+                    break;
+                case MIDDLE_LEFT:
+                    main_cube.faces[NEG_X].cubes[MIDDLE_RIGHT] = new_cube_obj;
+                    new_cube.position.x -= CUBE_SIZE;
+                    break;
+                case MIDDLE_RIGHT:
+                    main_cube.faces[POS_X].cubes[MIDDLE_LEFT] = new_cube_obj;
+                    new_cube.position.x += CUBE_SIZE;
+                    break;
+                case BOTTOM_LEFT:
+                    main_cube.faces[NEG_X].cubes[BOTTOM_RIGHT] = new_cube_obj;
+                    main_cube.faces[NEG_Y].cubes[UPPER_LEFT] = new_cube_obj;
+                    new_cube.position.x -= CUBE_SIZE;
+                    new_cube.position.y -= CUBE_SIZE;
+                    break;
+                case BOTTOM_MIDDLE:
+                    main_cube.faces[NEG_Y].cubes[UPPER_MIDDLE] = new_cube_obj;
+                    new_cube.position.y -= CUBE_SIZE;
+                    break;
+                case BOTTOM_RIGHT:
+                    main_cube.faces[POS_X].cubes[BOTTOM_LEFT] = new_cube_obj;
+                    main_cube.faces[NEG_Y].cubes[UPPER_RIGHT] = new_cube_obj;
+                    new_cube.position.x += CUBE_SIZE;
+                    new_cube.position.y -= CUBE_SIZE;
+            }
         }
     }
 
+    console.log(main_cube.faces[POS_Y].cubes)
     // Orange Face
     for (let loc = 0; loc < 9; loc++)
     {
-        // Determine the color of the materials for the new cube
-        
-        // Blue
-        if (loc === UPPER_LEFT) {}
+        if (loc !== CENTER)
+        {
+            // Determine the color of the materials for the new cube
+            new_mats = black_mats.slice();
+            new_mats[NEG_Z] = materials[ORANGE_MAT];
 
-        // Red
+            // Blue
+            if (loc === UPPER_RIGHT || loc === MIDDLE_RIGHT || loc === BOTTOM_RIGHT) {
+                new_mats[NEG_X] = materials[BLUE_MAT];
+            }
 
-        // White
+            // Red
+            if (loc === UPPER_LEFT || loc === MIDDLE_LEFT || loc === BOTTOM_LEFT) {
+                new_mats[POS_X] = materials[RED_MAT];
+            }
 
-        // Yellow
+            // White
+            if (loc === UPPER_LEFT || loc === UPPER_MIDDLE || loc === UPPER_RIGHT) {
+                new_mats[POS_Y] = materials[WHITE_MAT];
+            }
 
-        // Create the cube and add it to the orange face
+            // Yellow
+            if (loc === BOTTOM_LEFT || loc === BOTTOM_MIDDLE || loc === BOTTOM_RIGHT) {
+                new_mats[NEG_Y] = materials[YELLOW_MAT];
+            }
 
-        // Add the cube to the appropriate other faces and change the position accordingly
+            // Create the cube and add it to the orange face
+            new_cube = new THREE.Mesh(cube_geom, new_mats);
+            new_cube_obj = new Cube(new_cube, main_cube);
+            main_cube.faces[NEG_Z].cubes[loc] = new_cube_obj;
+            new_cube.position.z -= CUBE_SIZE;
 
+            // Add the cube to the appropriate other faces and change the position accordingly
+            switch (loc) {
+                case UPPER_LEFT:
+                    main_cube.faces[POS_X].cubes[UPPER_RIGHT] = new_cube_obj;
+                    main_cube.faces[POS_Y].cubes[UPPER_RIGHT] = new_cube_obj;
+                    new_cube.position.x += CUBE_SIZE;
+                    new_cube.position.y += CUBE_SIZE;
+                    break;
+                case UPPER_MIDDLE:
+                    main_cube.faces[POS_Y].cubes[UPPER_MIDDLE] = new_cube_obj;
+                    new_cube.position.y += CUBE_SIZE;
+                    break;
+                case UPPER_RIGHT:
+                    main_cube.faces[NEG_X].cubes[UPPER_LEFT] = new_cube_obj;
+                    main_cube.faces[POS_Y].cubes[UPPER_LEFT] = new_cube_obj;
+                    new_cube.position.x -= CUBE_SIZE;
+                    new_cube.position.y += CUBE_SIZE;
+                    break;
+                case MIDDLE_LEFT:
+                    main_cube.faces[POS_X].cubes[MIDDLE_LEFT] = new_cube_obj;
+                    new_cube.position.x += CUBE_SIZE;
+                    break;
+                case MIDDLE_RIGHT:
+                    main_cube.faces[NEG_X].cubes[MIDDLE_RIGHT] = new_cube_obj;
+                    new_cube.position.x -= CUBE_SIZE;
+                    break;
+                case BOTTOM_LEFT:
+                    main_cube.faces[POS_X].cubes[BOTTOM_RIGHT] = new_cube_obj;
+                    main_cube.faces[NEG_Y].cubes[BOTTOM_RIGHT] = new_cube_obj;
+                    new_cube.position.x += CUBE_SIZE;
+                    new_cube.position.y -= CUBE_SIZE;
+                    break;
+                case BOTTOM_MIDDLE:
+                    main_cube.faces[NEG_Y].cubes[BOTTOM_MIDDLE] = new_cube_obj;
+                    new_cube.position.y -= CUBE_SIZE;
+                    break;
+                case BOTTOM_RIGHT:
+                    main_cube.faces[NEG_X].cubes[BOTTOM_LEFT] = new_cube_obj;
+                    main_cube.faces[NEG_Y].cubes[BOTTOM_RIGHT] = new_cube_obj;
+                    new_cube.position.x -= CUBE_SIZE;
+                    new_cube.position.y -= CUBE_SIZE;
+            }
+        }
     }
+
+    // Blue
+    new_mats = black_mats.slice();
+    new_mats[NEG_X] = materials[BLUE_MAT];
+    new_mats[POS_Y] = materials[WHITE_MAT];
+    new_cube = new THREE.Mesh(cube_geom, new_mats);
+    new_cube_obj = new Cube(new_cube, main_cube);
+    main_cube.faces[POS_Y].cubes[MIDDLE_LEFT] = new_cube_obj;
+    new_cube.position.x -= CUBE_SIZE;
+    new_cube.position.y += CUBE_SIZE;
+
+    new_mats = black_mats.slice();
+    new_mats[NEG_X] = materials[BLUE_MAT];
+    new_mats[NEG_Y] = materials[YELLOW_MAT];
+    new_cube = new THREE.Mesh(cube_geom, new_mats);
+    new_cube_obj = new Cube(new_cube, main_cube);
+    main_cube.faces[NEG_Y].cubes[MIDDLE_LEFT] = new_cube_obj;
+    new_cube.position.x -= CUBE_SIZE;
+    new_cube.position.y -= CUBE_SIZE;
+
+    // Red
+    new_mats = black_mats.slice();
+    new_mats[POS_X] = materials[RED_MAT];
+    new_mats[POS_Y] = materials[WHITE_MAT];
+    new_cube = new THREE.Mesh(cube_geom, new_mats);
+    new_cube_obj = new Cube(new_cube, main_cube);
+    main_cube.faces[POS_Y].cubes[MIDDLE_RIGHT] = new_cube_obj;
+    new_cube.position.x += CUBE_SIZE;
+    new_cube.position.y += CUBE_SIZE;
+
+    new_mats = black_mats.slice();
+    new_mats[POS_X] = materials[RED_MAT];
+    new_mats[NEG_Y] = materials[YELLOW_MAT];
+    new_cube = new THREE.Mesh(cube_geom, new_mats);
+    new_cube_obj = new Cube(new_cube, main_cube);
+    main_cube.faces[NEG_Y].cubes[MIDDLE_RIGHT] = new_cube_obj;
+    new_cube.position.x += CUBE_SIZE;
+    new_cube.position.y -= CUBE_SIZE;
+
+    // White
+
+    // Yellow
 }

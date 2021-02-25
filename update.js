@@ -1,3 +1,8 @@
+let global_rotation = 0;
+let white_rotation = 0;
+let red_rotation = 0;
+let green_rotation = 0;
+
 // Function that is meant to be called once per frame
 function update() {
 
@@ -19,12 +24,32 @@ function update() {
     */
 
     // Visual testing rotations. Allows vision on each side of the main cube
-    if (frameCounter === 100) {
-        console.log("yo");
-        main_cube.group.rotation.x += Math.PI;
-    }
+    // if (frameCounter === 1) {
+    //     main_cube.group.rotation.x -= Math.PI / 2;
+    // }
+
     // main_cube.group.rotation.x += 0.01;
     // main_cube.group.rotation.y += 0.04;
+
+    main_cube.group.rotation.y = Math.PI / 2;
+    // Rotate green and main
+    if (frameCounter > 120)
+    {
+        let face = main_cube.faces[POS_Z];
+        if(green_rotation < (2 * Math.PI))
+        {
+            green_rotation += 0.0008 * delta;
+            face.group.rotation.z += 0.0008 * delta;
+            face.rotate();
+        }
+
+        else
+        {
+            face.group.rotation.z = 0;
+            face.finishRotation();
+            main_cube.group.rotation.z += 0.01;
+        }
+    }
 
     // Rerender the scene and camera
     renderer.render(scene, camera);
