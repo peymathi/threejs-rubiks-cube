@@ -1,5 +1,8 @@
 let rotation = 0;
-let swap = true;
+let swap = 0;
+const X = 0;
+const Y = 1;
+const Z = 2;
 let frameCounter = 0;
 let timer;
 
@@ -29,58 +32,78 @@ function update() {
     // }
 
     main_cube.group.rotation.x += 0.0006 * delta;
-    main_cube.group.rotation.y += 0.0008 * delta;
+    main_cube.group.rotation.y += 0.0006 * delta;
+    main_cube.group.rotation.z += 0.0006 * delta;
 
-    // Rotate green, orange, and main
-    if (frameCounter)
+    // Rotate each one of the faces in a dimension once and then switch dimensions
+    if (swap === Z)
     {
-        console.log("?")
-        if (swap)
+        let face = main_cube.faces[NEG_Z];
+        let face_two = main_cube.faces[POS_Z];
+        if (rotation < (2 * Math.PI))
         {
-            let face = main_cube.faces[NEG_Z];
-            let face_two = main_cube.faces[POS_Z];
-            if (rotation < (2 * Math.PI))
-            {
-                rotation += 0.0008 * delta;
-                face.rotate();
-                face_two.rotate();
-                face.group.rotation.z += 0.0008 * delta;
-                face_two.group.rotation.z -= 0.0008 * delta;
-            }
-
-            else
-            {
-                face.group.rotation.z = 0;
-                face_two.group.rotation.z = 0;
-
-                rotation = 0;
-                face.finishRotation();
-                face_two.finishRotation();
-                swap = false;
-            }
+            rotation += 0.0008 * delta;
+            face.rotate();
+            face_two.rotate();
+            face.group.rotation.z += 0.0008 * delta;
+            face_two.group.rotation.z -= 0.0008 * delta;
         }
 
         else
         {
-            let face = main_cube.faces[POS_X];
-            let face_two = main_cube.faces[NEG_X];
-            if (rotation < (2 * Math.PI)) {
-                rotation += 0.0008 * delta;
-                face.rotate();
-                face_two.rotate();
-                face.group.rotation.x += 0.0008 * delta;
-                face_two.group.rotation.x -= 0.0008 * delta;
-            }
+            face.group.rotation.z = 0;
+            face_two.group.rotation.z = 0;
 
-            else {
-                face.group.rotation.x = 0;
-                face_two.group.rotation.x = 0;
+            rotation = 0;
+            face.finishRotation();
+            face_two.finishRotation();
+            swap = X;
+        }
+    }
 
-                rotation = 0;
-                face.finishRotation();
-                face_two.finishRotation();
-                swap = true;
-            }
+    else if (swap === X)
+    {
+        let face = main_cube.faces[POS_X];
+        let face_two = main_cube.faces[NEG_X];
+        if (rotation < (2 * Math.PI)) {
+            rotation += 0.0008 * delta;
+            face.rotate();
+            face_two.rotate();
+            face.group.rotation.x += 0.0008 * delta;
+            face_two.group.rotation.x -= 0.0008 * delta;
+        }
+
+        else {
+            face.group.rotation.x = 0;
+            face_two.group.rotation.x = 0;
+
+            rotation = 0;
+            face.finishRotation();
+            face_two.finishRotation();
+            swap = Y;
+        }
+    }
+
+    else if (swap === Y)
+    {
+        let face = main_cube.faces[POS_Y];
+        let face_two = main_cube.faces[NEG_Y];
+        if (rotation < (2 * Math.PI)) {
+            rotation += 0.0008 * delta;
+            face.rotate();
+            face_two.rotate();
+            face.group.rotation.y += 0.0008 * delta;
+            face_two.group.rotation.y -= 0.0008 * delta;
+        }
+
+        else {
+            face.group.rotation.y = 0;
+            // face_two.group.rotation.y = 0;
+
+            rotation = 0;
+            face.finishRotation();
+            face_two.finishRotation();
+            swap = Z;
         }
     }
 

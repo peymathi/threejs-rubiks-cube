@@ -62,15 +62,6 @@ class Face {
             this.cubes[i].reset();
         }
     }
-
-    // TESTING REMOVE LATER
-    check() {
-        console.log(this.position)
-        for (let i = 0; i < 9; i++)
-        {
-            console.log(this.position + ":" + this.cubes[i] + ":" + i);
-        }
-    }
 }
 
 // Class representing a single piece of the rubik's cube
@@ -419,11 +410,5 @@ function init() {
     main_cube.faces[POS_X].cubes[BOTTOM_MIDDLE] = new_cube_obj;
     new_cube.position.x += CUBE_SIZE;
     new_cube.position.y -= CUBE_SIZE;
-
-    // // TESTING
-    // for (let i = 0; i < 6; i++)
-    // {
-    //     main_cube.faces[i].check();
-    // }
 
 }
