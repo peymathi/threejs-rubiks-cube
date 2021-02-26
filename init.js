@@ -1,6 +1,6 @@
 // Globals defined. Initialized in init function
-let camera, main_cube, faces, renderer, scene, tester_cube, timer;
-let frameCounter = 0;
+let camera, main_cube, faces, renderer, scene, tester_cube;
+
 const CUBE_SIZE = 0.7;
 
 // Constants for the arrays of faces
@@ -420,10 +420,10 @@ function init() {
     new_cube.position.x += CUBE_SIZE;
     new_cube.position.y -= CUBE_SIZE;
 
-    // TEST
-    for (let i = 0; i < 6; i++)
-    {
-        main_cube.faces[i].check();
-    }
+    // // TESTING
+    // for (let i = 0; i < 6; i++)
+    // {
+    //     main_cube.faces[i].check();
+    // }
 
 }

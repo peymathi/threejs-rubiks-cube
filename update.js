@@ -1,5 +1,7 @@
 let rotation = 0;
 let swap = true;
+let frameCounter = 0;
+let timer;
 
 // Function that is meant to be called once per frame
 function update() {
@@ -11,7 +13,7 @@ function update() {
     frameCounter += 1;
     let delta = 0;
     let d = new Date();
-    if (timer !== null) {
+    if (timer) {
         delta = d.getTime() - timer;
     }
     // Starts timer for next delta time computation
@@ -26,12 +28,13 @@ function update() {
     //     main_cube.group.rotation.x -= Math.PI / 2;
     // }
 
-    // main_cube.group.rotation.x += 0.006;
-    // main_cube.group.rotation.y += 0.008;
+    main_cube.group.rotation.x += 0.0006 * delta;
+    main_cube.group.rotation.y += 0.0008 * delta;
 
     // Rotate green, orange, and main
-    if (frameCounter > 120)
+    if (frameCounter)
     {
+        console.log("?")
         if (swap)
         {
             let face = main_cube.faces[NEG_Z];
@@ -43,15 +46,12 @@ function update() {
                 face_two.rotate();
                 face.group.rotation.z += 0.0008 * delta;
                 face_two.group.rotation.z -= 0.0008 * delta;
-                main_cube.group.rotation.y += 0.0008 * delta;
-                main_cube.group.rotation.x += 0.0006 * delta;
             }
 
             else
             {
                 face.group.rotation.z = 0;
                 face_two.group.rotation.z = 0;
-                main_cube.group.rotation.y = 0;
 
                 rotation = 0;
                 face.finishRotation();
@@ -70,14 +70,11 @@ function update() {
                 face_two.rotate();
                 face.group.rotation.x += 0.0008 * delta;
                 face_two.group.rotation.x -= 0.0008 * delta;
-                main_cube.group.rotation.x += 0.0008 * delta;
-                main_cube.group.rotation.y += 0.0006 * delta;
             }
 
             else {
                 face.group.rotation.x = 0;
                 face_two.group.rotation.x = 0;
-                main_cube.group.rotation.y = 0;
 
                 rotation = 0;
                 face.finishRotation();
