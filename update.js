@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 
 let rotation = 0;
 let swap = 0;
