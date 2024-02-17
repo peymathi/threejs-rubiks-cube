@@ -92,7 +92,7 @@ let materials = [
     new THREE.MeshBasicMaterial({ map: loader.load('yellow.png') }), // neg-y
     new THREE.MeshBasicMaterial({ map: loader.load('orange.png') }), // pos-z
     new THREE.MeshBasicMaterial({ map: loader.load('white.png') }), // neg-z
-    new THREE.MeshPhongMaterial({ color: 000000 }),
+    new THREE.MeshPhongMaterial({ color: 0x000000 }),
 ];
 
 // Constants for indexing the materials array
