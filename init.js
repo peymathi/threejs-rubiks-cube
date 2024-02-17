@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+
 
 // Globals defined. Initialized in init function
 let camera, main_cube, faces, renderer, scene, tester_cube;
