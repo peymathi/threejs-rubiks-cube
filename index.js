@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 // Sets up all of the vanilla JS stuff and then calls init and update functions when ready.
 function main() {
     window.onresize = resize;
